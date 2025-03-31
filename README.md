@@ -31,8 +31,9 @@ weights
 - |- README.md
 
 
+1. Download the weights of diffinpaint in [Google Drive Link](https://drive.google.com/drive/folders/1TZPRpgjMtV274dyqo3XBy_0PB93upHSy?usp=sharing):
 
- 1. Download pretrained weight of based models and other components:
+2. Download the pretrained weight of based models and other components:
 * stable-diffusion-v1-5：[Hugging Face](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5/tree/main)  
   The full folder size of stable-diffusion-v1-5 is quite large(>30 GB), you can download the necessary folders and files: #feature_extractor, model_index.json, safety_checker, scheduler, text_encoder, and tokenizer#
 * PCM_Weights: [Hugging Face](https://huggingface.co/wangfuyun/PCM_Weights)
