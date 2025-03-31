@@ -12,49 +12,29 @@ Theability to dynamically reconstruct surgical scenes is paramount in computer-a
 ## Download the pre-trained models
 Place the weight under the ./weights directory, the structure of the directory will be arranged as:
 weights
+ 
+- |- diffinpaint
+  - |-brushnet
+  - |-unet_main
+- |- stable-diffusion-v1-5
+  - |-feature_extractor
+  - |-...
+- |- PCM_Weights
+  - |-sd15  
+- |- propainter
+  - |-ProPainter.pth
+  - |-raft-things.pth
+  - |-recurrent_flow_completion.pth
+- |- sd-vae-ft-mse
+  - |-diffusion_pytorch_model.bin
+  - |-...
+- |- README.md
 
-
-   |- diffinpaint
-   
-      |-brushnet
-      
-      |-unet_main
-      
-   |- stable-diffusion-v1-5
-   
-      |-feature_extractor
-      
-      |-...
-      
-   |- PCM_Weights
-   
-      |-sd15
-      
-   |- propainter
-   
-      |-ProPainter.pth
-      
-      |-raft-things.pth
-      
-      |-recurrent_flow_completion.pth
-      
-   |- sd-vae-ft-mse
-   
-      |-diffusion_pytorch_model.bin
-      
-      |-...
-      
-   |- animatediff-motion-adapter-v1-5-2 (Optional)
-   
-      |- diffusion_pytorch_model.safetensors
-      
-      |- ...
-      
-   |- README.md
 
 
  1. Download pretrained weight of based models and other components:
-* stable-diffusion-v1-5： The full folder size of stable-diffusion-v1-5 is quite large(>30 GB), you can download the necessary folders and files: #feature_extractor, model_index.json, safety_checker, scheduler, text_encoder, and tokenizer#
-* PCM_Weights
-* propainter
-* sd-vae-ft-mse
+* stable-diffusion-v1-5：[Hugging Face](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5/tree/main)  
+  The full folder size of stable-diffusion-v1-5 is quite large(>30 GB), you can download the necessary folders and files: #feature_extractor, model_index.json, safety_checker, scheduler, text_encoder, and tokenizer#
+* PCM_Weights: [Hugging Face](https://huggingface.co/wangfuyun/PCM_Weights)
+* propainter: [Github link](https://github.com/sczhou/ProPainter/releases/tag/v0.1.0)
+* sd-vae-ft-mse: [Hugging Face](https://huggingface.co/stabilityai/sd-vae-ft-mse/tree/main)
