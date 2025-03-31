@@ -13,11 +13,17 @@ The ability to dynamically reconstruct surgical scenes is paramount in computer-
 # Getting Started
 ## Setup the Environment
 First, you need to create a corresponding conda environment：
+
 conda create -n Diff2dgs python=3.12
+
 conda activate Diff2dgs
+
 conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch-lts
+
 git clone https://github.com/styufo/Diff2DGS.git
+
 cd Diff2DGS
+
 pip install -r requirements.txt
 
 ## Download the pre-trained models
