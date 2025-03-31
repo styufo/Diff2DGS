@@ -20,10 +20,10 @@ from transformers import AutoTokenizer, PretrainedConfig
 
 from libs.unet_motion_model import MotionAdapter, UNetMotionModel
 from libs.brushnet_CA import BrushNetModel
-from diffinpainting.pipeline_diffinpainting import StableDiffusionInpaintingPipeline
+from diffinpaint.pipeline_diffinpaint import StableDiffusionInpaintingPipeline
 
 
-class Diffinpainting:
+class diffinpaint:
     def __init__(self, device, base_model_path, vae_path, diffinpaint_path, revision=None,
                  ckpt="Normal CFG 4-Step", mode="sd15", loaded=None):
         self.device = device
