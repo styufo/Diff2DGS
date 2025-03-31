@@ -78,7 +78,7 @@ class DiffInpaintingPipelineOutput(BaseOutput):
     frames: Union[torch.Tensor, np.ndarray]
     latents: Union[torch.Tensor, np.ndarray]
 
-class StableDiffusionDiffinpaintingPipeline(
+class StableDiffusionInpaintingPipeline(
     DiffusionPipeline,
     StableDiffusionMixin,
     TextualInversionLoaderMixin,
