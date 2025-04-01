@@ -54,7 +54,28 @@ weights
 
 2. Download the pretrained weight of based models and other components:
 * stable-diffusion-v1-5：[Hugging Face](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5/tree/main)  
-  The full folder size of stable-diffusion-v1-5 is quite large(>30 GB), you can download the necessary folders and files: #feature_extractor, model_index.json, safety_checker, scheduler, text_encoder, and tokenizer#
+  The full folder size of stable-diffusion-v1-5 is quite large(>30 GB), you can download the necessary folders and files: **feature_extractor, model_index.json, safety_checker, scheduler, text_encoder, and tokenizer**
 * PCM_Weights: [Hugging Face](https://huggingface.co/wangfuyun/PCM_Weights)
 * propainter: [Github link](https://github.com/sczhou/ProPainter/releases/tag/v0.1.0)
 * sd-vae-ft-mse: [Hugging Face](https://huggingface.co/stabilityai/sd-vae-ft-mse/tree/main)
+
+## Data Preparation
+Plaese download the EndoNeRF and StereoMIS dataset from these two links：[EndoNeRF](https://github.com/med-air/EndoNeRF?tab=readme-ov-file), [StrereoMIS](https://zenodo.org/records/7727692)
+
+
+To use the StereoMIS dataset, please follow this [github repo](https://github.com/aimi-lab/robust-pose-estimator) to preprocess the dataset. After that, run the script stereomis2endonerf.py provided in [Deform3DGS](https://github.com/jinlab-imvr/Deform3DGS/blob/main/stereomis2endonerf.py) to extract clips from the StereoMIS dataset and organize the depth, masks, images, intrinsic and extrinsic parameters in the same format as EndoNeRF.
+
+And then，set the data structure is as follows:
+```
+data
+| - endonerf_full_datasets
+|   | - cutting_tissues_twice
+|   |   | -  depth/
+|   |   | -  images/
+|   |   | -  masks/
+|   |   | -  pose_bounds.npy 
+|   | - pushing_soft_tissues
+| - StereoMIS
+|   | - stereo_seq_1
+|   | - stereo_seq_2
+```
