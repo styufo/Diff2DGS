@@ -8,6 +8,11 @@ code is coming soon
 The ability to dynamically reconstruct surgical scenes is paramount in computer-assisted surgery. Although existing methods have achieved relatively fast reconstruction, the reconstruction result for occlusion parts in surgical scenes is not ideal. We propose Diff2DGS a novel two-stage framework for addressing the challenges of 3D reconstruction in occluded surgical scenes. The first stage leverages a diffusion-based video inpainting module, enhanced with temporal priors, to restore tissues occluded by surgical instruments with high spatiotemporal consistency. The second stage adapts 2D Gaussian Splatting (2DGS) to surgical scenarios by incorporating a Learnable Deformation Model (LDM), which explicitly models dynamic tissue deformation and anatomical geometry. Experimental results demonstrate that Diff2DGS outperforms state-of-the-art methods in both reconstruction accuracy and efficiency, particularly in
  highly occluded regions. Quantitatively, Diff2DGS achieves the state-ofthe-art PSNR and SSIM on both StereoMIS and EndoNeRF datasets.
 
+
+Here's a demo video of our result:
+
+![Sample Video](https://github.com/styufo/Diff2DGS/blob/main/assets/demo.mp4)
+
  # Architecture
 ![GitHub Logo](https://github.com/styufo/Diff2DGS/blob/main/arti.png)
 Diff2DGS consists of Surgical Instrument Inpainting, Point Cloud Initialization, Deformation Modeling, and 2D Gaussian Splatting. First, we use a pre-trained surgical instrument inpainting model to generate the occlusion part of the surgical instrument. This process tracks the surgical instrument across frames and generates high-quality tissue images with spatiotemporal consistency using stable diffusion and temporal attention. Next, the images without occlusion are combined with depth information to initialize the Gaussian point cloud, and tissue deformation is simulated by a Learnable Deformation Model. Subsequently, a 2D Gaussian splatting model is applied to generate a color image and depth map from the perspective of the given camera. Finally, the optimization loss is computed against the ground truth to refine the framework further.
