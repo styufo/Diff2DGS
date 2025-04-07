@@ -11,7 +11,7 @@ The ability to dynamically reconstruct surgical scenes is paramount in computer-
 
 Here's a demo video of our result:
 
-![Sample Video](https://github.com/styufo/Diff2DGS/blob/main/assets/demo.mp4)
+[![Sample Video](https://github.com/user-attachments/assets/2d27c76d-9e3e-4f7c-b1f3-625a00656989)](https://github.com/user-attachments/assets/2d27c76d-9e3e-4f7c-b1f3-625a00656989)
 
  # Architecture
 ![GitHub Logo](https://github.com/styufo/Diff2DGS/blob/main/arti.png)
