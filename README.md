@@ -6,30 +6,6 @@ Diff2DGS restores tissue hidden by surgical instruments and reconstructs the res
 
 ![Diff2DGS overview](arti.png)
 
-## Pipeline
-
-```text
-EndoNeRF-format scene
-  images + masks + depth + poses
-              |
-              v
-   video encoding and validation
-              |
-              v
- ProPainter prior + diffusion inpainting
-              |
-              v
-  inpainted frames with original names
-              |
-              v
- deformable 2D Gaussian reconstruction
-              |
-              v
-  renders + metrics + optional full-sequence PLY
-```
-
-All generated files are written to an isolated workspace. The input dataset is never modified. Every stage is recorded in `pipeline_state.json`, so interrupted runs can resume without repeating completed work.
-
 ## Installation
 
 The tested configuration is Ubuntu 22.04, Python 3.9, CUDA 11.8, and PyTorch 2.1.2. An NVIDIA GPU with at least 24 GB is recommended for the default 960-pixel inpainting resolution.
