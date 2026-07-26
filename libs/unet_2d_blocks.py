@@ -1398,7 +1398,7 @@ class CrossAttnDownBlock2D(nn.Module):
                 hidden_states = hidden_states + additional_residuals
 
             if down_block_add_samples is not None:
-                hidden_states = hidden_states + down_block_add_samples.pop(0) 
+                hidden_states = hidden_states + down_block_add_samples.pop(0)
 
             output_states = output_states + (hidden_states,)
 
@@ -1493,7 +1493,7 @@ class DownBlock2D(nn.Module):
                 hidden_states = resnet(hidden_states, temb, scale=scale)
 
             if down_block_add_samples is not None:
-                hidden_states = hidden_states + down_block_add_samples.pop(0) 
+                hidden_states = hidden_states + down_block_add_samples.pop(0)
 
             output_states = output_states + (hidden_states,)
 
@@ -2636,7 +2636,7 @@ class CrossAttnUpBlock2D(nn.Module):
             if return_res_samples:
                 output_states = output_states + (hidden_states,)
             if up_block_add_samples is not None:
-                hidden_states = hidden_states + up_block_add_samples.pop(0) 
+                hidden_states = hidden_states + up_block_add_samples.pop(0)
 
         if self.upsamplers is not None:
             for upsampler in self.upsamplers:
@@ -2644,8 +2644,8 @@ class CrossAttnUpBlock2D(nn.Module):
             if return_res_samples:
                 output_states = output_states + (hidden_states,)
             if up_block_add_samples is not None:
-                hidden_states = hidden_states + up_block_add_samples.pop(0) 
-            
+                hidden_states = hidden_states + up_block_add_samples.pop(0)
+
         if return_res_samples:
             return hidden_states, output_states
         else:
@@ -2771,7 +2771,7 @@ class UpBlock2D(nn.Module):
                 output_states = output_states + (hidden_states,)
             if up_block_add_samples is not None:
                 hidden_states = hidden_states + up_block_add_samples.pop(0)  # todo: add before or after
-            
+
 
         if return_res_samples:
             return hidden_states, output_states

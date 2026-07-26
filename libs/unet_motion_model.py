@@ -840,7 +840,7 @@ class UNetMotionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixin):
                 if is_adapter and len(down_intrablock_additional_residuals) > 0:
                     additional_residuals["additional_residuals"] = down_intrablock_additional_residuals.pop(0)
                 if is_brushnet and len(down_block_add_samples)>0:
-                    additional_residuals["down_block_add_samples"] = [down_block_add_samples.pop(0) 
+                    additional_residuals["down_block_add_samples"] = [down_block_add_samples.pop(0)
                                                         for _ in range(len(downsample_block.resnets)+(downsample_block.downsamplers !=None))]
 
                 sample, res_samples = downsample_block(
@@ -855,7 +855,7 @@ class UNetMotionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixin):
             else:
                 additional_residuals = {}
                 if is_brushnet and len(down_block_add_samples)>0:
-                    additional_residuals["down_block_add_samples"] = [down_block_add_samples.pop(0) 
+                    additional_residuals["down_block_add_samples"] = [down_block_add_samples.pop(0)
                                                         for _ in range(len(downsample_block.resnets)+(downsample_block.downsamplers !=None))]
                 sample, res_samples = downsample_block(hidden_states=sample, temb=emb, num_frames=num_frames, **additional_residuals,)
                 if is_adapter and len(down_intrablock_additional_residuals) > 0:
@@ -932,7 +932,7 @@ class UNetMotionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixin):
             if hasattr(upsample_block, "has_cross_attention") and upsample_block.has_cross_attention:
                 additional_residuals = {}
                 if is_brushnet and len(up_block_add_samples)>0:
-                    additional_residuals["up_block_add_samples"] = [up_block_add_samples.pop(0) 
+                    additional_residuals["up_block_add_samples"] = [up_block_add_samples.pop(0)
                                                         for _ in range(len(upsample_block.resnets)+(upsample_block.upsamplers !=None))]
                 sample = upsample_block(
                     hidden_states=sample,
@@ -948,7 +948,7 @@ class UNetMotionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixin):
             else:
                 additional_residuals = {}
                 if is_brushnet and len(up_block_add_samples)>0:
-                    additional_residuals["up_block_add_samples"] = [up_block_add_samples.pop(0) 
+                    additional_residuals["up_block_add_samples"] = [up_block_add_samples.pop(0)
                                                         for _ in range(len(upsample_block.resnets)+(upsample_block.upsamplers !=None))]
                 sample = upsample_block(
                     hidden_states=sample,

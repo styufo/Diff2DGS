@@ -1,81 +1,199 @@
 # Diff2DGS
-Official implement for Diff2DGS: Reliable Reconstruction of Occluded Surgical Scenes via 2D Gaussian Splatting
 
+Official implementation of **Diff2DGS: Reliable Reconstruction of Occluded Surgical Scenes via 2D Gaussian Splatting**.
 
-code is coming soon
+Diff2DGS restores tissue hidden by surgical instruments and reconstructs the resulting dynamic scene with deformable 2D Gaussian surfels. This repository provides the complete pipeline, including frame/video conversion, mask-aware video inpainting, dataset assembly, training, rendering, evaluation, and optional point-cloud export.
 
-# Introduction
-The ability to dynamically reconstruct surgical scenes is paramount in computer-assisted surgery. Although existing methods have achieved relatively fast reconstruction, the reconstruction result for occlusion parts in surgical scenes is not ideal. We propose Diff2DGS a novel two-stage framework for addressing the challenges of 3D reconstruction in occluded surgical scenes. The first stage leverages a diffusion-based video inpainting module, enhanced with temporal priors, to restore tissues occluded by surgical instruments with high spatiotemporal consistency. The second stage adapts 2D Gaussian Splatting (2DGS) to surgical scenarios by incorporating a Learnable Deformation Model (LDM), which explicitly models dynamic tissue deformation and anatomical geometry. Experimental results demonstrate that Diff2DGS outperforms state-of-the-art methods in both reconstruction accuracy and efficiency, particularly in
- highly occluded regions. Quantitatively, Diff2DGS achieves the state-ofthe-art PSNR and SSIM on both StereoMIS and EndoNeRF datasets.
+![Diff2DGS overview](arti.png)
 
+## Pipeline
 
-Here's a demo video of our result:
-
-[![Sample Video](https://github.com/user-attachments/assets/2d27c76d-9e3e-4f7c-b1f3-625a00656989)](https://github.com/user-attachments/assets/2d27c76d-9e3e-4f7c-b1f3-625a00656989)
-
- # Architecture
-![GitHub Logo](https://github.com/styufo/Diff2DGS/blob/main/arti.png)
-Diff2DGS consists of Surgical Instrument Inpainting, Point Cloud Initialization, Deformation Modeling, and 2D Gaussian Splatting. First, we use a pre-trained surgical instrument inpainting model to generate the occlusion part of the surgical instrument. This process tracks the surgical instrument across frames and generates high-quality tissue images with spatiotemporal consistency using stable diffusion and temporal attention. Next, the images without occlusion are combined with depth information to initialize the Gaussian point cloud, and tissue deformation is simulated by a Learnable Deformation Model. Subsequently, a 2D Gaussian splatting model is applied to generate a color image and depth map from the perspective of the given camera. Finally, the optimization loss is computed against the ground truth to refine the framework further.
-
-# Getting Started
-## Setup the Environment
-First, you need to create a corresponding conda environment：
+```text
+EndoNeRF-format scene
+  images + masks + depth + poses
+              |
+              v
+   video encoding and validation
+              |
+              v
+ ProPainter prior + diffusion inpainting
+              |
+              v
+  inpainted frames with original names
+              |
+              v
+ deformable 2D Gaussian reconstruction
+              |
+              v
+  renders + metrics + optional full-sequence PLY
 ```
-conda create -n Diff2dgs python=3.12
-conda activate Diff2dgs
-conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch-lts
+
+All generated files are written to an isolated workspace. The input dataset is never modified. Every stage is recorded in `pipeline_state.json`, so interrupted runs can resume without repeating completed work.
+
+## Installation
+
+The tested configuration is Ubuntu 22.04, Python 3.9, CUDA 11.8, and PyTorch 2.1.2. An NVIDIA GPU with at least 24 GB is recommended for the default 960-pixel inpainting resolution.
+
+### Docker
+
+```bash
 git clone https://github.com/styufo/Diff2DGS.git
 cd Diff2DGS
-pip install -r requirements.txt
+docker build -t diff2dgs:cuda118 .
 ```
-## Download the pre-trained models
-Place the weight under the ./weights directory, the structure of the directory will be arranged as:
-weights
- 
-- |- diffinpaint
-  - |-brushnet
-  - |-unet_main
-- |- stable-diffusion-v1-5
-  - |-feature_extractor
-  - |-...
-- |- PCM_Weights
-  - |-sd15  
-- |- propainter
-  - |-ProPainter.pth
-  - |-raft-things.pth
-  - |-recurrent_flow_completion.pth
-- |- sd-vae-ft-mse
-  - |-diffusion_pytorch_model.bin
-  - |-...
-- |- README.md
 
+Run the container with the dataset, workspace, and weights mounted explicitly:
 
-1. Download the weights of diffinpaint in [Google Drive Link](https://drive.google.com/drive/folders/1TZPRpgjMtV274dyqo3XBy_0PB93upHSy?usp=sharing):
-
-2. Download the pretrained weight of based models and other components:
-* stable-diffusion-v1-5：[Hugging Face](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5/tree/main)  
-  The full folder size of stable-diffusion-v1-5 is quite large(>30 GB), you can download the necessary folders and files: **feature_extractor, model_index.json, safety_checker, scheduler, text_encoder, and tokenizer**
-* PCM_Weights: [Hugging Face](https://huggingface.co/wangfuyun/PCM_Weights)
-* propainter: [Github link](https://github.com/sczhou/ProPainter/releases/tag/v0.1.0)
-* sd-vae-ft-mse: [Hugging Face](https://huggingface.co/stabilityai/sd-vae-ft-mse/tree/main)
-
-## Data Preparation
-Plaese download the EndoNeRF and StereoMIS dataset from these two links：[EndoNeRF](https://github.com/med-air/EndoNeRF?tab=readme-ov-file), [StrereoMIS](https://zenodo.org/records/7727692)
-
-
-To use the StereoMIS dataset, please follow this [github repo](https://github.com/aimi-lab/robust-pose-estimator) to preprocess the dataset. After that, run the script stereomis2endonerf.py provided in [Deform3DGS](https://github.com/jinlab-imvr/Deform3DGS/blob/main/stereomis2endonerf.py) to extract clips from the StereoMIS dataset and organize the depth, masks, images, intrinsic and extrinsic parameters in the same format as EndoNeRF.
-
-And then，set the data structure is as follows:
+```bash
+docker run --rm --gpus all \
+  -v /path/to/scene:/data:ro \
+  -v /path/to/run:/run \
+  -v /path/to/weights:/weights:ro \
+  diff2dgs:cuda118 run \
+  --data /data --workspace /run --weights /weights --export-ply
 ```
-data
-| - endonerf_full_datasets
-|   | - cutting_tissues_twice
-|   |   | -  depth/
-|   |   | -  images/
-|   |   | -  masks/
-|   |   | -  pose_bounds.npy 
-|   | - pushing_soft_tissues
-| - StereoMIS
-|   | - stereo_seq_1
-|   | - stereo_seq_2
+
+### Conda
+
+```bash
+git clone https://github.com/styufo/Diff2DGS.git
+cd Diff2DGS
+bash scripts/setup_env.sh
+conda activate diff2dgs
 ```
+
+The setup script installs the Python package and compiles `simple-knn` and the 2D Gaussian surfel rasterizer locally. Compiled binaries are intentionally not stored in Git.
+
+Run the CPU-only orchestration tests with `python -m unittest discover -s tests`.
+
+## Model Weights
+
+Download the standard model components with:
+
+```bash
+bash scripts/download_weights.sh
+```
+
+The Diff2DGS inpainting checkpoint is distributed separately. Download it from the [project checkpoint folder](https://drive.google.com/drive/folders/1TZPRpgjMtV274dyqo3XBy_0PB93upHSy?usp=sharing) and arrange the files as:
+
+```text
+weights/
+  diffinpaint/
+    brushnet/
+    unet_main/
+  stable-diffusion-v1-5/
+  sd-vae-ft-mse/
+  PCM_Weights/sd15/
+  propainter/
+    ProPainter.pth
+    raft-things.pth
+    recurrent_flow_completion.pth
+```
+
+Weights, datasets, and generated outputs are ignored by Git.
+
+## Data
+
+The one-command pipeline accepts the EndoNeRF-compatible layout used by both EndoNeRF and our preprocessed StereoMIS clips:
+
+```text
+scene/
+  images/
+  masks/
+  depth/
+  poses_bounds.npy
+```
+
+The three frame directories must contain the same number of frames. Files are matched by natural sorted order, so their prefixes may differ. Video inpainting requires at least 22 frames. Masks passed to the inpainting model must use white for the region to remove. Use `--mask-foreground black` when the supplied masks use the opposite convention.
+
+The camera convention is detected automatically from common path and filename patterns. Use `--dataset-type endonerf` or `--dataset-type stereomis` to override detection for renamed datasets.
+
+EndoNeRF can be obtained from its [official repository](https://github.com/med-air/EndoNeRF). StereoMIS must first be rectified and converted to this layout following [Deform3DGS](https://github.com/jinlab-imvr/Deform3DGS); stereo depth is expected to be present before running Diff2DGS.
+
+## One-Command Reconstruction
+
+```bash
+diff2dgs run \
+  --data /path/to/cutting_tissues_twice \
+  --workspace runs/endonerf_cutting \
+  --weights weights \
+  --gpu 0 \
+  --export-ply
+```
+
+The same command works for a converted StereoMIS scene:
+
+```bash
+diff2dgs run \
+  --data /path/to/StereoMIS/P3 \
+  --workspace runs/stereomis_p3 \
+  --weights weights \
+  --gpu 0
+```
+
+The default reconstruction uses the paper's conservative adaptive depth weighting:
+
+```text
+w_init = 10, alpha = 0.8, beta = 0.25, w_min = 1, w_max = 10
+```
+
+Useful controls:
+
+```bash
+# Stop after creating and validating the input videos.
+diff2dgs run --data DATA --workspace RUN --to-stage prepare
+
+# Resume at reconstruction after an interrupted inpainting run.
+diff2dgs run --data DATA --workspace RUN --from-stage inpaint
+
+# Rerun a completed stage and invalidate its dependent downstream stages.
+diff2dgs run --data DATA --workspace RUN --force render
+
+# Reconstruct images that have already been inpainted.
+diff2dgs run --data INPAINTED_DATA --workspace RUN --skip-inpainting
+
+# Fixed-weight ablation.
+diff2dgs run --data DATA --workspace RUN --depth-strategy fixed --depth-weight 1
+```
+
+The workspace is organized as:
+
+```text
+runs/<name>/
+  dataset/              # reconstruction-ready scene
+  media/                # input, mask, prior, and inpainted videos
+  model/                # checkpoints, renders, and results.json
+    reconstruct/video/  # per-frame full-sequence PLY files (with --export-ply)
+  dataset_manifest.json
+  pipeline_state.json
+```
+
+On a desktop with an OpenGL display, play the exported PLY sequence or record it to a video with:
+
+```bash
+diff2dgs visualize \
+  --input runs/endonerf_cutting/model/reconstruct/video \
+  --fps 10 \
+  --output runs/endonerf_cutting/point_cloud.mp4
+```
+
+## Components and Attribution
+
+The inpainting implementation builds on [DiffuEraser](https://github.com/lixiaowen-xw/DiffuEraser) and uses [ProPainter](https://github.com/sczhou/ProPainter) to generate the temporal prior. The reconstruction implementation builds on [Deform3DGS](https://github.com/jinlab-imvr/Deform3DGS), [2D Gaussian Splatting](https://github.com/hbb1/2d-gaussian-splatting), and the Gaussian Splatting codebase. See [NOTICE](NOTICE.md) and the component license files before redistribution or commercial use.
+
+## Citation
+
+```bibtex
+@article{song2026diff2dgs,
+  title={Diff2DGS: Reliable Reconstruction of Occluded Surgical Scenes via 2D Gaussian Splatting},
+  author={Song, Tianyi and Stoyanov, Danail and Mazomenos, Evangelos and Vasconcelos, Francisco},
+  journal={IEEE Robotics and Automation Letters},
+  year={2026}
+}
+```
+
+Please also cite DiffuEraser, ProPainter, Deform3DGS, and 2D Gaussian Splatting when using the corresponding components.
+
+## License
+
+The repository contains components under different licenses. The reconstruction code is restricted to non-commercial research and evaluation under the Gaussian Splatting license in [LICENSE](LICENSE). The inpainting component is based on Apache-2.0 code, while ProPainter has its own terms. See [NOTICE](NOTICE.md) for the exact mapping.

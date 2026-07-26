@@ -397,7 +397,7 @@ class BrushNetModel(ModelMixin, ConfigMixin):
         only_cross_attention = list(reversed(only_cross_attention))
 
         output_channel = reversed_block_out_channels[0]
-        
+
         self.up_blocks = nn.ModuleList([])
         self.brushnet_up_blocks = nn.ModuleList([])
 
@@ -438,7 +438,7 @@ class BrushNetModel(ModelMixin, ConfigMixin):
             )
             self.up_blocks.append(up_block)
             prev_output_channel = output_channel
-            
+
             for _ in range(layers_per_block+1):
                 brushnet_block = nn.Conv2d(output_channel, output_channel, kernel_size=1)
                 brushnet_block = zero_module(brushnet_block)
@@ -834,7 +834,7 @@ class BrushNetModel(ModelMixin, ConfigMixin):
             else:
                 sample, res_samples = downsample_block(hidden_states=sample, temb=emb)
 
-            down_block_res_samples += res_samples  
+            down_block_res_samples += res_samples
 
         # 4. PaintingNet down blocks
         brushnet_down_block_res_samples = ()
@@ -927,7 +927,7 @@ class BrushNetModel(ModelMixin, ConfigMixin):
             return (brushnet_down_block_res_samples, brushnet_mid_block_res_sample, brushnet_up_block_res_samples)
 
         return BrushNetOutput(
-            down_block_res_samples=brushnet_down_block_res_samples, 
+            down_block_res_samples=brushnet_down_block_res_samples,
             mid_block_res_sample=brushnet_mid_block_res_sample,
             up_block_res_samples=brushnet_up_block_res_samples
         )

@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "diff2dgs"
+version = "1.0.0"
+description = "Reliable reconstruction of occluded surgical scenes via deformable 2D Gaussian Splatting"
+requires-python = ">=3.9,<3.11"
+dependencies = ["numpy>=1.26,<2", "Pillow>=10,<11"]
+
+[project.scripts]
+diff2dgs = "diff2dgs.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["diff2dgs*", "inpainting*"]

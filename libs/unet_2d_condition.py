@@ -1229,7 +1229,7 @@ class UNet2DConditionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixin,
                     additional_residuals["additional_residuals"] = down_intrablock_additional_residuals.pop(0)
 
                 if is_brushnet and len(down_block_add_samples)>0:
-                    additional_residuals["down_block_add_samples"] = [down_block_add_samples.pop(0) 
+                    additional_residuals["down_block_add_samples"] = [down_block_add_samples.pop(0)
                                                         for _ in range(len(downsample_block.resnets)+(downsample_block.downsamplers !=None))]
 
                 sample, res_samples = downsample_block(
@@ -1244,7 +1244,7 @@ class UNet2DConditionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixin,
             else:
                 additional_residuals = {}
                 if is_brushnet and len(down_block_add_samples)>0:
-                    additional_residuals["down_block_add_samples"] = [down_block_add_samples.pop(0) 
+                    additional_residuals["down_block_add_samples"] = [down_block_add_samples.pop(0)
                                                         for _ in range(len(downsample_block.resnets)+(downsample_block.downsamplers !=None))]
 
                 sample, res_samples = downsample_block(hidden_states=sample, temb=emb, scale=lora_scale, **additional_residuals)
@@ -1256,7 +1256,7 @@ class UNet2DConditionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixin,
                 adapter_idx += 1
 
             down_block_res_samples += res_samples
-        
+
         if features_adapter is not None:
             assert len(features_adapter) == adapter_idx, "Wrong features_adapter"
 
@@ -1314,9 +1314,9 @@ class UNet2DConditionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixin,
             if hasattr(upsample_block, "has_cross_attention") and upsample_block.has_cross_attention:
                 additional_residuals = {}
                 if is_brushnet and len(up_block_add_samples)>0:
-                    additional_residuals["up_block_add_samples"] = [up_block_add_samples.pop(0) 
+                    additional_residuals["up_block_add_samples"] = [up_block_add_samples.pop(0)
                                                         for _ in range(len(upsample_block.resnets)+(upsample_block.upsamplers !=None))]
-                
+
                 sample = upsample_block(
                     hidden_states=sample,
                     temb=emb,
@@ -1331,9 +1331,9 @@ class UNet2DConditionModel(ModelMixin, ConfigMixin, UNet2DConditionLoadersMixin,
             else:
                 additional_residuals = {}
                 if is_brushnet and len(up_block_add_samples)>0:
-                    additional_residuals["up_block_add_samples"] = [up_block_add_samples.pop(0) 
+                    additional_residuals["up_block_add_samples"] = [up_block_add_samples.pop(0)
                                                         for _ in range(len(upsample_block.resnets)+(upsample_block.upsamplers !=None))]
-                
+
                 sample = upsample_block(
                     hidden_states=sample,
                     temb=emb,

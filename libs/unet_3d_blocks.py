@@ -1013,7 +1013,7 @@ class DownBlockMotion(nn.Module):
         blocks = zip(self.resnets, self.motion_modules)
         for resnet, motion_module in blocks:
             if self.training and self.gradient_checkpointing:
-                
+
                 def create_custom_forward(module, return_dict=None):
                     def custom_forward(*inputs):
                         if return_dict is not None:
@@ -1033,7 +1033,7 @@ class DownBlockMotion(nn.Module):
                 )
 
                 if down_block_add_samples is not None:
-                    hidden_states = hidden_states + down_block_add_samples.pop(0) 
+                    hidden_states = hidden_states + down_block_add_samples.pop(0)
 
                 hidden_states = torch.utils.checkpoint.checkpoint(
                     create_custom_forward(motion_module),
@@ -1046,7 +1046,7 @@ class DownBlockMotion(nn.Module):
             else:
                 hidden_states = resnet(hidden_states, temb, scale=scale)
                 if down_block_add_samples is not None:
-                    hidden_states = hidden_states + down_block_add_samples.pop(0) 
+                    hidden_states = hidden_states + down_block_add_samples.pop(0)
                 hidden_states = motion_module(hidden_states, num_frames=num_frames)
 
             output_states = output_states + (hidden_states,)
@@ -1054,9 +1054,9 @@ class DownBlockMotion(nn.Module):
         if self.downsamplers is not None:
             for downsampler in self.downsamplers:
                 hidden_states = downsampler(hidden_states, scale=scale)
-            
+
             if down_block_add_samples is not None:
-                hidden_states = hidden_states + down_block_add_samples.pop(0) 
+                hidden_states = hidden_states + down_block_add_samples.pop(0)
 
             output_states = output_states + (hidden_states,)
 
@@ -1226,7 +1226,7 @@ class CrossAttnDownBlockMotion(nn.Module):
                 if i == len(blocks) - 1 and additional_residuals is not None:
                     hidden_states = hidden_states + additional_residuals
                 if down_block_add_samples is not None:
-                    hidden_states = hidden_states + down_block_add_samples.pop(0) 
+                    hidden_states = hidden_states + down_block_add_samples.pop(0)
                 hidden_states = torch.utils.checkpoint.checkpoint(
                     create_custom_forward(motion_module),
                     hidden_states.requires_grad_(),
@@ -1248,7 +1248,7 @@ class CrossAttnDownBlockMotion(nn.Module):
                 if i == len(blocks) - 1 and additional_residuals is not None:
                     hidden_states = hidden_states + additional_residuals
                 if down_block_add_samples is not None:
-                    hidden_states = hidden_states + down_block_add_samples.pop(0) 
+                    hidden_states = hidden_states + down_block_add_samples.pop(0)
                 hidden_states = motion_module(
                     hidden_states,
                     num_frames=num_frames,
@@ -1263,9 +1263,9 @@ class CrossAttnDownBlockMotion(nn.Module):
         if self.downsamplers is not None:
             for downsampler in self.downsamplers:
                 hidden_states = downsampler(hidden_states, scale=lora_scale)
-            
+
             if down_block_add_samples is not None:
-                hidden_states = hidden_states + down_block_add_samples.pop(0) 
+                hidden_states = hidden_states + down_block_add_samples.pop(0)
 
             output_states = output_states + (hidden_states,)
 
@@ -1448,7 +1448,7 @@ class CrossAttnUpBlockMotion(nn.Module):
                     return_dict=False,
                 )[0]
                 if up_block_add_samples is not None:
-                    hidden_states = hidden_states + up_block_add_samples.pop(0) 
+                    hidden_states = hidden_states + up_block_add_samples.pop(0)
                 hidden_states = torch.utils.checkpoint.checkpoint(
                     create_custom_forward(motion_module),
                     hidden_states.requires_grad_(),
@@ -1456,7 +1456,7 @@ class CrossAttnUpBlockMotion(nn.Module):
                     num_frames,
                     **ckpt_kwargs,
                 )
-            else:   
+            else:
                 hidden_states = resnet(hidden_states, temb, scale=lora_scale)
                 hidden_states = attn(
                     hidden_states,
@@ -1467,7 +1467,7 @@ class CrossAttnUpBlockMotion(nn.Module):
                     return_dict=False,
                 )[0]
                 if up_block_add_samples is not None:
-                    hidden_states = hidden_states + up_block_add_samples.pop(0) 
+                    hidden_states = hidden_states + up_block_add_samples.pop(0)
                 hidden_states = motion_module(
                     hidden_states,
                     num_frames=num_frames,
@@ -1477,7 +1477,7 @@ class CrossAttnUpBlockMotion(nn.Module):
             for upsampler in self.upsamplers:
                 hidden_states = upsampler(hidden_states, upsample_size, scale=lora_scale)
             if up_block_add_samples is not None:
-                hidden_states = hidden_states + up_block_add_samples.pop(0) 
+                hidden_states = hidden_states + up_block_add_samples.pop(0)
 
         return hidden_states
 
@@ -1609,10 +1609,10 @@ class UpBlockMotion(nn.Module):
                     hidden_states = torch.utils.checkpoint.checkpoint(
                         create_custom_forward(resnet), hidden_states, temb
                     )
-                
+
                 if up_block_add_samples is not None:
-                    hidden_states = hidden_states + up_block_add_samples.pop(0)  
-                
+                    hidden_states = hidden_states + up_block_add_samples.pop(0)
+
                 hidden_states = torch.utils.checkpoint.checkpoint(
                         create_custom_forward(motion_module),
                         hidden_states.requires_grad_(),
@@ -1623,15 +1623,15 @@ class UpBlockMotion(nn.Module):
             else:
                 hidden_states = resnet(hidden_states, temb, scale=scale)
                 if up_block_add_samples is not None:
-                    hidden_states = hidden_states + up_block_add_samples.pop(0)  
+                    hidden_states = hidden_states + up_block_add_samples.pop(0)
                 hidden_states = motion_module(hidden_states, num_frames=num_frames)
 
         if self.upsamplers is not None:
             for upsampler in self.upsamplers:
                 hidden_states = upsampler(hidden_states, upsample_size, scale=scale)
-            
+
             if up_block_add_samples is not None:
-                hidden_states = hidden_states + up_block_add_samples.pop(0)  
+                hidden_states = hidden_states + up_block_add_samples.pop(0)
 
         return hidden_states
 
@@ -1783,7 +1783,7 @@ class UNetMidBlockCrossAttnMotion(nn.Module):
                 ##########
                 hidden_states = resnet(hidden_states, temb, scale=lora_scale)
                 if mid_block_add_sample is not None:
-                    hidden_states = hidden_states + mid_block_add_sample 
+                    hidden_states = hidden_states + mid_block_add_sample
                 ################################################################
                 hidden_states = torch.utils.checkpoint.checkpoint(
                     create_custom_forward(motion_module),
@@ -1810,7 +1810,7 @@ class UNetMidBlockCrossAttnMotion(nn.Module):
                 ##########
                 hidden_states = resnet(hidden_states, temb, scale=lora_scale)
                 if mid_block_add_sample is not None:
-                    hidden_states = hidden_states + mid_block_add_sample 
+                    hidden_states = hidden_states + mid_block_add_sample
                 ################################################################
                 hidden_states = motion_module(
                     hidden_states,
