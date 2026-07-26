@@ -1,6 +1,6 @@
 # Diff2DGS
 
-Official implementation of **Diff2DGS: Reliable Reconstruction of Occluded Surgical Scenes via 2D Gaussian Splatting**.
+Official implementation of **Diff2DGS: Reliable Reconstruction of Occluded Surgical Scenes via 2D Gaussian Splatting(IEEE RA-L)**.
 
 Diff2DGS restores tissue hidden by surgical instruments and reconstructs the resulting dynamic scene with deformable 2D Gaussian surfels. This repository provides the complete pipeline, including frame/video conversion, mask-aware video inpainting, dataset assembly, training, rendering, evaluation, and optional point-cloud export.
 
