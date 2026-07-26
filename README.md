@@ -4,7 +4,7 @@ Official implementation of **Diff2DGS: Reliable Reconstruction of Occluded Surgi
 
 Diff2DGS restores tissue hidden by surgical instruments and reconstructs the resulting dynamic scene with deformable 2D Gaussian surfels. This repository provides the complete pipeline, including frame/video conversion, mask-aware video inpainting, dataset assembly, training, rendering, evaluation, and optional point-cloud export.
 
-![Diff2DGS overview](arti.png)
+[![Diff2DGS framework](assets/miccai_fig.png)](assets/miccai_fig.pdf)
 
 ## Installation
 
